@@ -27,7 +27,10 @@ big_cats_data/
 # IDEs
 .vscode/
 .idea/
--e 
+
 # Secrets
 secrets.env
 .env
+
+# Claude Code
+.claude/
