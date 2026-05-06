@@ -20,7 +20,7 @@ from __future__ import annotations
 
 import logging
 from pathlib import Path
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 import torch
 from PIL import Image
@@ -80,8 +80,11 @@ class EfficientNetClassifier:
     def __init__(self, weights_path: Path = WEIGHTS_PATH):
         import timm
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        self.model = timm.create_model("efficientnet_b0", pretrained=False, num_classes=len(CLASS_NAMES))
         checkpoint = torch.load(weights_path, map_location=self.device, weights_only=False)
+        # Use class names saved in the checkpoint — preserves the exact training order
+        # (ImageFolder sorts alphabetically, which differs from the hardcoded CLASS_NAMES order)
+        self.class_names = checkpoint.get("class_names", CLASS_NAMES)
+        self.model = timm.create_model("efficientnet_b0", pretrained=False, num_classes=len(self.class_names))
         state = checkpoint.get("model_state_dict", checkpoint)
         self.model.load_state_dict(state)
         self.model.to(self.device).eval()
@@ -101,8 +104,8 @@ class EfficientNetClassifier:
         tensor = self.transforms(image).unsqueeze(0).to(self.device)
         with torch.no_grad():
             probs = torch.softmax(self.model(tensor), dim=1)[0]
-        top_probs, top_idxs = probs.topk(min(top_k, len(CLASS_NAMES)))
-        return [(CLASS_NAMES[i], float(p)) for i, p in zip(top_idxs, top_probs)]
+        top_probs, top_idxs = probs.topk(min(top_k, len(self.class_names)))
+        return [(self.class_names[i], float(p)) for i, p in zip(top_idxs, top_probs)]
 
 
 # ── 2. CLIP zero-shot ────────────────────────────────────────────────────────
@@ -154,18 +157,22 @@ class DemoClassifier:
 # ── Factory ──────────────────────────────────────────────────────────────────
 
 _classifier_cache = None
+_load_error: Optional[str] = None  # set when EfficientNet weights exist but fail to load
 
 
 def get_classifier(force_demo: bool = False):
     """
-    Return a cached classifier.  Priority:
+    Build and return a classifier.  Priority:
       1. EfficientNet-B0  (if .pth weights present)
       2. CLIP ViT-B/32    (downloads ~600 MB once, then cached locally)
       3. Demo mode        (instant, no downloads — UI preview only)
+
+    NOTE: internal caching removed — Streamlit's @st.cache_resource (keyed on
+    the weights file mtime) is the authoritative cache.  This prevents a stale
+    DemoClassifier from surviving after the .pth file is added.
     """
-    global _classifier_cache
-    if _classifier_cache is not None:
-        return _classifier_cache
+    global _classifier_cache, _load_error
+    _load_error = None
 
     if force_demo:
         _classifier_cache = DemoClassifier()
@@ -178,6 +185,7 @@ def get_classifier(force_demo: bool = False):
             logger.info("Using fine-tuned EfficientNet-B0")
             return _classifier_cache
         except Exception as e:
+            _load_error = str(e)
             logger.warning("EfficientNet load failed (%s); trying CLIP", e)
 
     # Try CLIP

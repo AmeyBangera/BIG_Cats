@@ -522,21 +522,19 @@ def load_species_db() -> dict:
 # ---------------------------------------------------------------------------
 # Real model predictor
 # ---------------------------------------------------------------------------
+_WEIGHTS_PATH = Path(__file__).parent / "big_cats_efficientnet.pth"
+
+
 @st.cache_resource(show_spinner=False)
-def load_classifier():
-    """Load and cache the classifier (EfficientNet → CLIP → Demo)."""
+def load_classifier(weights_mtime: float = 0.0):
+    """Load and cache the classifier, keyed on the weights file mtime.
+
+    Using the mtime as a cache key means Streamlit invalidates the cache
+    automatically whenever the .pth file is added or replaced, preventing
+    a stale DemoClassifier from persisting across restarts.
+    """
     from model import get_classifier
     return get_classifier()
-
-
-def classifier_mode() -> str:
-    """Return a string describing which model is active."""
-    from model import _classifier_cache, EfficientNetClassifier, CLIPClassifier, DemoClassifier
-    if isinstance(_classifier_cache, EfficientNetClassifier):
-        return "efficientnet"
-    if isinstance(_classifier_cache, CLIPClassifier):
-        return "clip"
-    return "demo"
 
 
 def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
@@ -547,19 +545,25 @@ def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
     otherwise falls back to CLIP ViT-B/32 zero-shot classification.
     """
     species_db = load_species_db()
-    classifier = load_classifier()
+    weights_mtime = _WEIGHTS_PATH.stat().st_mtime if _WEIGHTS_PATH.exists() else 0.0
+    classifier = load_classifier(weights_mtime)
 
-    # Show mode banner
-    mode = classifier_mode()
-    if mode == "demo":
-        st.info(
-            "⚠️ **Demo mode** — no model loaded. "
-            "Results below are illustrative only. "
-            "Run the training notebook to get real weights, or ensure internet access for CLIP.",
-            icon=None,
-        )
-    elif mode == "clip":
+    # Determine which model is active and show appropriate banner
+    from model import EfficientNetClassifier, CLIPClassifier, _load_error
+    if isinstance(classifier, EfficientNetClassifier):
+        pass  # fine-tuned model — no banner needed
+    elif isinstance(classifier, CLIPClassifier):
         st.info("🔍 **CLIP zero-shot** — no fine-tuned weights found. Using zero-shot classification.", icon=None)
+    else:
+        if _load_error and _WEIGHTS_PATH.exists():
+            st.error(f"⚠️ EfficientNet weights found but failed to load: {_load_error}")
+        else:
+            st.info(
+                "⚠️ **Demo mode** — no model loaded. "
+                "Results below are illustrative only. "
+                "Run the training notebook to get real weights, or ensure internet access for CLIP.",
+                icon=None,
+            )
 
     # Run inference
     raw_results = classifier.predict(image, top_k=3)  # [(class_key, confidence), ...]
@@ -879,6 +883,7 @@ with mid:
             img = Image.open(sample_path)
             process_image = img
             process_uri = img_to_data_uri(img)
+            st.session_state.last_key = None  # force re-prediction even if same image
         else:
             st.warning("Drop a `tiger.jpg` in `./samples/` to enable the sample.")
 
