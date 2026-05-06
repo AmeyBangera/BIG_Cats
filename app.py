@@ -50,43 +50,43 @@ if "preview_bytes" not in st.session_state:
 # Design tokens — mirror the React app's src/styles.css
 # ---------------------------------------------------------------------------
 LIGHT_TOKENS = {
-    "background": "oklch(0.97 0.015 90)",
-    "foreground": "oklch(0.22 0.03 150)",
-    "card": "oklch(0.985 0.01 90)",
-    "muted": "oklch(0.93 0.018 100)",
-    "muted_foreground": "oklch(0.45 0.025 140)",
-    "border": "oklch(0.88 0.02 110)",
-    "primary": "oklch(0.32 0.06 152)",
-    "primary_foreground": "oklch(0.97 0.02 95)",
-    "secondary": "oklch(0.92 0.025 110)",
-    "accent": "oklch(0.78 0.13 75)",
-    "fern": "oklch(0.55 0.12 145)",
-    "clay": "oklch(0.62 0.13 45)",
+    "background": "#f5f3ee",
+    "foreground": "#1a2e22",
+    "card": "#f9f7f3",
+    "muted": "#e8e4db",
+    "muted_foreground": "#5e6e5a",
+    "border": "#d4cfbe",
+    "primary": "#1a4a32",
+    "primary_foreground": "#f5f3ee",
+    "secondary": "#e4e0d4",
+    "accent": "#c89b3c",
+    "fern": "#2d8a5e",
+    "clay": "#b07840",
 }
 DARK_TOKENS = {
-    "background": "oklch(0.18 0.02 150)",
-    "foreground": "oklch(0.96 0.015 90)",
-    "card": "oklch(0.22 0.025 150)",
-    "muted": "oklch(0.26 0.025 150)",
-    "muted_foreground": "oklch(0.7 0.02 120)",
-    "border": "oklch(1 0 0 / 12%)",
-    "primary": "oklch(0.78 0.12 145)",
-    "primary_foreground": "oklch(0.18 0.03 150)",
-    "secondary": "oklch(0.28 0.03 150)",
-    "accent": "oklch(0.78 0.13 75)",
-    "fern": "oklch(0.7 0.13 145)",
-    "clay": "oklch(0.7 0.13 45)",
+    "background": "#1a2820",
+    "foreground": "#eceae5",
+    "card": "#22332a",
+    "muted": "#2e3e34",
+    "muted_foreground": "#98a898",
+    "border": "rgba(255,255,255,0.12)",
+    "primary": "#5cb88a",
+    "primary_foreground": "#1a2820",
+    "secondary": "#2a3a30",
+    "accent": "#c89b3c",
+    "fern": "#5cb88a",
+    "clay": "#c89b3c",
 }
 
 # IUCN status palette
 STATUS_META = {
-    "LC": ("Least Concern",          "oklch(0.62 0.14 150)"),
-    "NT": ("Near Threatened",        "oklch(0.78 0.14 110)"),
-    "VU": ("Vulnerable",             "oklch(0.8 0.15 80)"),
-    "EN": ("Endangered",             "oklch(0.68 0.18 45)"),
-    "CR": ("Critically Endangered",  "oklch(0.58 0.22 28)"),
-    "EW": ("Extinct in the Wild",    "oklch(0.4 0.02 150)"),
-    "EX": ("Extinct",                "oklch(0.3 0.02 150)"),
+    "LC": ("Least Concern",          "#2d8a5e"),
+    "NT": ("Near Threatened",        "#b8a832"),
+    "VU": ("Vulnerable",             "#d4a020"),
+    "EN": ("Endangered",             "#d06030"),
+    "CR": ("Critically Endangered",  "#c0362c"),
+    "EW": ("Extinct in the Wild",    "#606060"),
+    "EX": ("Extinct",                "#404040"),
 }
 
 T = DARK_TOKENS if st.session_state.theme == "dark" else LIGHT_TOKENS
@@ -129,7 +129,7 @@ st.markdown(
       /* Header */
       .bc-header {{
         position: sticky; top: 0; z-index: 30;
-        background: color-mix(in oklab, {T['background']} 80%, transparent);
+        background: {T['background']};
         backdrop-filter: blur(18px);
         border-bottom: 1px solid {T['border']};
       }}
@@ -147,7 +147,7 @@ st.markdown(
 
       /* Hero */
       .bc-hero {{
-        background: color-mix(in oklab, {T['secondary']} 40%, transparent);
+        background: {T['secondary']};
         border-bottom: 1px solid {T['border']};
       }}
       .bc-hero-grid {{
@@ -187,7 +187,7 @@ st.markdown(
         padding: 12px 20px; border-radius: 999px;
         font-size: 14px; font-weight: 500;
         text-decoration: none;
-        box-shadow: 0 1px 2px oklch(0.2 0.05 150 / 0.06), 0 8px 24px oklch(0.2 0.05 150 / 0.08);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
         transition: opacity .2s;
       }}
       .bc-btn-primary:hover {{ opacity: .9; }}
@@ -196,13 +196,13 @@ st.markdown(
       .bc-hero-card {{
         position: relative; border-radius: 24px; overflow: hidden;
         border: 1px solid {T['border']};
-        box-shadow: 0 2px 4px oklch(0.2 0.05 150 / 0.08), 0 24px 60px -12px oklch(0.2 0.05 150 / 0.22);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 24px 60px -12px rgba(0,0,0,0.22);
       }}
       .bc-hero-card img {{ width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; }}
       .bc-hero-tag {{
         position: absolute; left: 16px; right: 16px; bottom: 16px;
         display: flex; align-items: center; justify-content: space-between;
-        background: color-mix(in oklab, {T['background']} 85%, transparent);
+        background: {T['background']};
         backdrop-filter: blur(12px);
         border-radius: 16px;
         padding: 12px 16px;
@@ -243,7 +243,7 @@ st.markdown(
       .bc-uploader-empty {{ text-align: center; padding: 24px; }}
       .bc-upload-icon {{
         width: 56px; height: 56px; border-radius: 999px;
-        background: color-mix(in oklab, {T['primary']} 12%, transparent);
+        background: rgba(26,74,50,0.12);
         color: {T['primary']};
         display: inline-flex; align-items: center; justify-content: center;
         margin-bottom: 12px;
@@ -264,7 +264,7 @@ st.markdown(
         transition: border-color .2s, background .2s;
       }}
       [data-testid="stFileUploader"] section > div:hover {{
-        border-color: color-mix(in oklab, {T['primary']} 50%, {T['border']}) !important;
+        border-color: {T['primary']} !important;
       }}
       [data-testid="stFileUploader"] small,
       [data-testid="stFileUploader"] span {{ color: {T['muted_foreground']} !important; }}
@@ -307,7 +307,7 @@ st.markdown(
         height: 28px !important;
       }}
       [key="theme_toggle"] button:hover {{
-        background: color-mix(in oklab, {T['secondary']} 60%, transparent) !important;
+        background: {T['secondary']} !important;
       }}
 
       /* Result card */
@@ -316,7 +316,7 @@ st.markdown(
         border: 1px solid {T['border']};
         border-radius: 24px;
         overflow: hidden;
-        box-shadow: 0 1px 2px oklch(0.2 0.05 150 / 0.06), 0 8px 24px oklch(0.2 0.05 150 / 0.08);
+        box-shadow: 0 1px 2px rgba(0,0,0,0.06), 0 8px 24px rgba(0,0,0,0.08);
         transition: transform .25s, box-shadow .25s;
         animation: bcRise .55s cubic-bezier(.2,.7,.2,1) both;
         height: 100%;
@@ -324,11 +324,11 @@ st.markdown(
       }}
       .bc-card:hover {{
         transform: translateY(-4px);
-        box-shadow: 0 2px 4px oklch(0.2 0.05 150 / 0.08), 0 24px 60px -12px oklch(0.2 0.05 150 / 0.22);
+        box-shadow: 0 2px 4px rgba(0,0,0,0.08), 0 24px 60px -12px rgba(0,0,0,0.22);
       }}
       .bc-card.top {{
         border-width: 2px;
-        border-color: color-mix(in oklab, {T['primary']} 30%, {T['border']});
+        border-color: {T['primary']};
       }}
       @keyframes bcRise {{
         from {{ opacity: 0; transform: translateY(16px); }}
@@ -346,7 +346,7 @@ st.markdown(
       .bc-top-ribbon {{
         position: absolute; top: 14px; right: 14px; z-index: 2;
         background: {T['accent']};
-        color: oklch(0.22 0.05 150);
+        color: #1a2e22;
         font-size: 10px; font-weight: 700;
         text-transform: uppercase; letter-spacing: 0.08em;
         padding: 4px 10px; border-radius: 999px;
@@ -368,7 +368,7 @@ st.markdown(
       /* Status badge */
       .bc-status {{
         display: inline-flex; align-items: center; gap: 6px;
-        background: color-mix(in oklab, {T['background']} 80%, transparent);
+        background: {T['background']};
         backdrop-filter: blur(8px);
         padding: 4px 10px;
         border-radius: 999px;
@@ -379,14 +379,14 @@ st.markdown(
       .bc-status .lbl {{ color: {T['muted_foreground']}; text-transform: none; letter-spacing: normal; }}
       .bc-status-pos {{
         position: absolute; left: 12px; top: 12px; z-index: 2;
-        border: 1px solid color-mix(in oklab, currentColor 25%, transparent);
+        border: 1px solid rgba(128,128,128,0.25);
       }}
 
       /* India indicator */
       .bc-india {{
         display: inline-flex; align-items: center; gap: 4px;
-        background: color-mix(in oklab, {T['clay']} 15%, transparent);
-        border: 1px solid color-mix(in oklab, {T['clay']} 30%, transparent);
+        background: rgba(200,155,60,0.15);
+        border: 1px solid rgba(200,155,60,0.30);
         padding: 2px 8px; border-radius: 999px;
         font-size: 10px; font-weight: 500;
       }}
@@ -411,8 +411,8 @@ st.markdown(
       .bc-desc {{ font-size: 14px; line-height: 1.6; color: {T['muted_foreground']}; }}
 
       .bc-fact {{
-        background: color-mix(in oklab, {T['accent']} 12%, transparent);
-        border: 1px solid color-mix(in oklab, {T['accent']} 25%, transparent);
+        background: rgba(200,155,60,0.12);
+        border: 1px solid rgba(200,155,60,0.25);
         border-radius: 16px;
         padding: 14px 16px;
         margin-top: auto;
@@ -434,7 +434,7 @@ st.markdown(
 
       /* Footer */
       .bc-footer {{
-        background: color-mix(in oklab, {T['secondary']} 40%, transparent);
+        background: {T['secondary']};
         border-top: 1px solid {T['border']};
         padding: 32px 0 16px;
         margin-top: 48px;
@@ -671,7 +671,7 @@ def render_hero():
                   <div class="sci">Panthera tigris tigris</div>
                   <div class="name">Bengal Tiger</div>
                 </div>
-                <span class="bc-status" style="border:1px solid color-mix(in oklab, {STATUS_META['EN'][1]} 40%, transparent)">
+                <span class="bc-status" style="border:1px solid rgba(208,96,48,0.4)">
                   <span class="dot" style="background:{STATUS_META['EN'][1]}"></span>EN
                 </span>
               </div>
@@ -927,3 +927,4 @@ if st.session_state.results:
     st.markdown("</div>", unsafe_allow_html=True)
 
 render_footer()
+
