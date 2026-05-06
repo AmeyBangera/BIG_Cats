@@ -524,12 +524,19 @@ def load_species_db() -> dict:
 # ---------------------------------------------------------------------------
 @st.cache_resource(show_spinner=False)
 def load_classifier():
-    """Load and cache the classifier (EfficientNet or CLIP)."""
-    try:
-        from model import get_classifier
-        return get_classifier()
-    except Exception as e:
-        return None
+    """Load and cache the classifier (EfficientNet → CLIP → Demo)."""
+    from model import get_classifier
+    return get_classifier()
+
+
+def classifier_mode() -> str:
+    """Return a string describing which model is active."""
+    from model import _classifier_cache, EfficientNetClassifier, CLIPClassifier, DemoClassifier
+    if isinstance(_classifier_cache, EfficientNetClassifier):
+        return "efficientnet"
+    if isinstance(_classifier_cache, CLIPClassifier):
+        return "clip"
+    return "demo"
 
 
 def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
@@ -542,9 +549,17 @@ def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
     species_db = load_species_db()
     classifier = load_classifier()
 
-    if classifier is None:
-        st.error("Model could not be loaded. Please check your installation.")
-        return []
+    # Show mode banner
+    mode = classifier_mode()
+    if mode == "demo":
+        st.info(
+            "⚠️ **Demo mode** — no model loaded. "
+            "Results below are illustrative only. "
+            "Run the training notebook to get real weights, or ensure internet access for CLIP.",
+            icon=None,
+        )
+    elif mode == "clip":
+        st.info("🔍 **CLIP zero-shot** — no fine-tuned weights found. Using zero-shot classification.", icon=None)
 
     # Run inference
     raw_results = classifier.predict(image, top_k=3)  # [(class_key, confidence), ...]
@@ -553,12 +568,17 @@ def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
     for rank, (class_key, conf) in enumerate(raw_results, start=1):
         meta = species_db.get(class_key, {})
 
-        # Use uploaded image URI for rank-1, look for a sample image for others
+        # Image for the card: rank 1 always shows the uploaded image.
+        # Ranks 2-3 try a sample image for that species; if none exists,
+        # fall back to the uploaded image (better than a blank card).
         if rank == 1:
             img_uri = uploaded_uri
         else:
             sample_path = Path(__file__).parent / "samples" / f"{class_key}.jpg"
-            img_uri = file_to_data_uri(sample_path) if sample_path.exists() else None
+            if sample_path.exists():
+                img_uri = file_to_data_uri(sample_path)
+            else:
+                img_uri = uploaded_uri  # reuse uploaded photo rather than showing blank
 
         predictions.append(Prediction(
             rank=rank,
