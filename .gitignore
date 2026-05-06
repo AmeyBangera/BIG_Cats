@@ -1,74 +1,31 @@
-# Python
+# Model weights (large binary; distribute separately or via HF Hub)
+big_cats_efficientnet.pth
+
+# Python cache
 __pycache__/
 *.py[cod]
-*$py.class
-*.so
+*.pyo
 .Python
-env/
-venv/
-ENV/
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
 
 # Virtual environments
-.venv
-venv.bak/
-env.bak/
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
+.venv/
+venv/
+env/
 
 # Streamlit
 .streamlit/
-.streamlit/secrets.toml
 
-# Cache files
-*.cache
-__pycache__/
+# Jupyter checkpoints
+.ipynb_checkpoints/
 
-# Data and cache
-species_data_cache.json
-*.pth
-*.pt
-*.pkl
-
-# Environment variables
-.env
-.env.local
-.env.*.local
-
-# OS
+# OS files
 .DS_Store
 Thumbs.db
 
-# Logs
-*.log
-logs/
+# Generated data
+*.zip
+big_cats_data/
 
-# Temporary files
-*.tmp
-*.temp
-*~
-
-# Models and large files
-models/
-*.model
-*.bin
+# IDEs
+.vscode/
+.idea/

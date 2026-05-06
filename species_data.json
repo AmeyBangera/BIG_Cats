@@ -1,0 +1,90 @@
+{
+  "cheetah": {
+    "common_name": "Cheetah",
+    "scientific_name": "Acinonyx jubatus",
+    "iucn_status": "VU",
+    "native_to_india": false,
+    "description": "The world's fastest land animal, capable of reaching 112 km/h in short bursts. Distinguished by its slender body, deep chest, and unique solid black spots. Once widespread across India, the Asiatic cheetah (A. j. venaticus) is now considered locally extinct, with reintroduction efforts underway at Kuno National Park.",
+    "fun_fact": "Unlike other big cats, cheetahs cannot roar — instead they purr, chirp, and make a bird-like 'chirrup' sound. Their semi-retractable claws act like cleats for grip during high-speed chases.",
+    "population": "~7,000 in the wild globally",
+    "habitat": "Open grasslands, savannas, semi-arid areas",
+    "threats": "Habitat loss, prey depletion, human-wildlife conflict, illegal wildlife trade"
+  },
+  "clouded_leopard": {
+    "common_name": "Clouded Leopard",
+    "scientific_name": "Neofelis nebulosa",
+    "iucn_status": "VU",
+    "native_to_india": true,
+    "description": "A medium-sized wild cat of Southeast Asia named for its distinctive cloud-shaped markings. Found in the foothills of the Himalayas and northeastern India, it is a gifted climber and can descend trees headfirst like a squirrel. It has the largest canine teeth relative to body size of any living cat.",
+    "fun_fact": "Clouded leopards have rotating rear ankles that allow them to climb down trees headfirst — a rare feat among cats. Their tail is often as long as their body, helping them balance in the canopy.",
+    "population": "Fewer than 10,000 mature individuals",
+    "habitat": "Dense tropical and subtropical forests, foothills",
+    "threats": "Deforestation, poaching for fur and bones, habitat fragmentation"
+  },
+  "jaguar": {
+    "common_name": "Jaguar",
+    "scientific_name": "Panthera onca",
+    "iucn_status": "NT",
+    "native_to_india": false,
+    "description": "The largest cat in the Americas and the third-largest felid in the world. Unlike leopards, jaguars have rosettes with central spots. Found primarily in the Amazon basin and Central America, jaguars are powerful swimmers and often hunt aquatic prey including caimans and capybaras.",
+    "fun_fact": "Jaguars kill by biting through their prey's skull — unlike other big cats that suffocate prey. Their bite is the strongest of any cat, pound-for-pound, strong enough to pierce turtle shells.",
+    "population": "~64,000–173,000 in the wild",
+    "habitat": "Tropical rainforests, wetlands, grasslands",
+    "threats": "Deforestation, cattle ranching, hunting, habitat fragmentation"
+  },
+  "leopard": {
+    "common_name": "Indian Leopard",
+    "scientific_name": "Panthera pardus fusca",
+    "iucn_status": "VU",
+    "native_to_india": true,
+    "description": "One of the most adaptable big cats, found across the Indian subcontinent from the Himalayas to Sri Lanka. Recognized by its golden coat with rosette-shaped spots, the Indian leopard is highly secretive and largely nocturnal. It thrives in forests, grasslands, and even near human settlements.",
+    "fun_fact": "Leopards can drag prey up to three times their own weight into tree branches to cache it away from scavengers like lions and hyenas. They are also excellent swimmers and occasionally eat fish and crabs.",
+    "population": "~12,000–14,000 in India",
+    "habitat": "Forests, grasslands, mountains, scrubland, urban fringes",
+    "threats": "Habitat loss, poaching for skin and bones, retaliation killings, human-wildlife conflict"
+  },
+  "lion": {
+    "common_name": "Asiatic Lion",
+    "scientific_name": "Panthera leo persica",
+    "iucn_status": "EN",
+    "native_to_india": true,
+    "description": "The only lion population outside Africa, the Asiatic lion survives entirely in the Gir Forest National Park of Gujarat, India. Slightly smaller than their African cousins, Asiatic lions are distinguished by a longitudinal fold of skin running along their belly and smaller, sparser manes in males.",
+    "fun_fact": "The entire global wild population of Asiatic lions lives in a single forest — Gir in Gujarat. Conservation efforts have grown the population from fewer than 20 in the early 1900s to over 670 today, one of wildlife conservation's greatest success stories.",
+    "population": "~675 in the wild (all in Gir, India)",
+    "habitat": "Dry deciduous forests, scrub jungle, open grasslands",
+    "threats": "Small gene pool, disease, habitat limits, human-wildlife conflict"
+  },
+  "tiger": {
+    "common_name": "Bengal Tiger",
+    "scientific_name": "Panthera tigris tigris",
+    "iucn_status": "EN",
+    "native_to_india": true,
+    "description": "The largest wild cat in Asia and the national animal of India, the Bengal tiger is iconic for its bold orange coat with black stripes and a white underbelly. Found in India, Bangladesh, Nepal, and Bhutan, it inhabits mangrove swamps, grasslands, and deciduous forests. India hosts more than 70% of the world's wild tiger population.",
+    "fun_fact": "Every Bengal tiger has a completely unique stripe pattern — no two are alike, much like human fingerprints. Researchers and conservationists can identify individual tigers just from photographs of their stripes.",
+    "population": "~2,500–3,000 in the wild (India hosts ~3,167)",
+    "habitat": "Mangroves, grasslands, tropical forests, deciduous forests",
+    "threats": "Poaching for traditional medicine, habitat loss, human-wildlife conflict, prey depletion"
+  },
+  "snow_leopard": {
+    "common_name": "Snow Leopard",
+    "scientific_name": "Panthera uncia",
+    "iucn_status": "VU",
+    "native_to_india": true,
+    "description": "A large cat adapted to the cold, high-altitude environments of Central Asia. Found in the Himalayas, Ladakh, and the western Ghats of India, the snow leopard has pale grey fur with dark rosettes, an enormously long tail for balance, and oversized paws that act as natural snowshoes. They are solitary and rarely seen.",
+    "fun_fact": "Snow leopards use their long, thick tail both as a rudder when jumping and as a scarf — they wrap it around their face to keep warm in freezing temperatures. Their tail can be nearly as long as their body.",
+    "population": "~4,000–6,500 globally",
+    "habitat": "Rocky alpine and subalpine zones, 3,000–5,400 m altitude",
+    "threats": "Poaching, prey depletion, retaliatory killings by herders, climate change"
+  },
+  "puma": {
+    "common_name": "Puma (Mountain Lion)",
+    "scientific_name": "Puma concolor",
+    "iucn_status": "LC",
+    "native_to_india": false,
+    "description": "The largest cat in North America by range, the puma is known by many names — cougar, mountain lion, panther — depending on the region. Unlike most big cats it cannot roar; it purrs like domestic cats. Highly adaptable, it spans habitats from Canadian forests to Patagonian grasslands and is a key apex predator.",
+    "fun_fact": "Pumas hold the Guinness World Record for the animal with the greatest number of names — over 40 in English alone, including cougar, mountain lion, catamount, panther, and painter. They are more closely related to domestic cats than to lions.",
+    "population": "~30,000 in the wild",
+    "habitat": "Forests, mountains, grasslands, deserts",
+    "threats": "Hunting, habitat fragmentation, vehicle collisions, retaliatory killings"
+  }
+}

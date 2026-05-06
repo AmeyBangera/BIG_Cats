@@ -16,6 +16,7 @@ Integrate your model:
 from __future__ import annotations
 
 import base64
+import json
 import io
 import time
 from dataclasses import dataclass, asdict
@@ -507,79 +508,71 @@ def file_to_data_uri(path: Path) -> Optional[str]:
 
 
 # ---------------------------------------------------------------------------
-# Demo predictor — REPLACE THIS with your real model
+# Species metadata loader
 # ---------------------------------------------------------------------------
+@st.cache_data
+def load_species_db() -> dict:
+    db_path = Path(__file__).parent / "species_data.json"
+    if db_path.exists():
+        with open(db_path) as f:
+            return json.load(f)
+    return {}
+
+
+# ---------------------------------------------------------------------------
+# Real model predictor
+# ---------------------------------------------------------------------------
+@st.cache_resource(show_spinner=False)
+def load_classifier():
+    """Load and cache the classifier (EfficientNet or CLIP)."""
+    try:
+        from model import get_classifier
+        return get_classifier()
+    except Exception as e:
+        return None
+
+
 def predict(image: Image.Image, uploaded_uri: str) -> List[Prediction]:
     """
-    Stub predictor that returns the same demo data the React app shows.
+    Run inference and return top-3 Prediction objects.
 
-    Integration:
-        from your_model import classify
-        raw = classify(image)  # -> [{name, sci, conf, status, ...}, ...]
-        return [Prediction(...) for r in raw[:3]]
+    Uses the fine-tuned EfficientNet-B0 if `big_cats_efficientnet.pth` is present,
+    otherwise falls back to CLIP ViT-B/32 zero-shot classification.
     """
-    time.sleep(1.6)  # simulate inference latency
+    species_db = load_species_db()
+    classifier = load_classifier()
 
-    samples_dir = Path(__file__).parent / "samples"
-    leopard_uri = file_to_data_uri(samples_dir / "leopard.jpg") or ""
-    lion_uri = file_to_data_uri(samples_dir / "lion.jpg") or ""
+    if classifier is None:
+        st.error("Model could not be loaded. Please check your installation.")
+        return []
 
-    return [
-        Prediction(
-            rank=1,
-            common_name="Bengal Tiger",
-            scientific_name="Panthera tigris tigris",
-            confidence=94.2,
-            status="EN",
-            description=(
-                "The largest wild cat in Asia, recognized by its bold orange coat and black "
-                "stripes. Found across India, Bangladesh, Nepal, and Bhutan, primarily in "
-                "mangroves, grasslands, and deciduous forests."
-            ),
-            fun_fact=(
-                "Every Bengal tiger has a unique stripe pattern — like a fingerprint. "
-                "Researchers can identify individuals from a single photo."
-            ),
-            native_to_india=True,
-            image_data_uri=uploaded_uri,
-        ),
-        Prediction(
-            rank=2,
-            common_name="Indian Leopard",
-            scientific_name="Panthera pardus fuscus",
-            confidence=78.5,
-            status="VU",
-            description=(
-                "A highly adaptable big cat found across the Indian subcontinent. Known for "
-                "its rosette-patterned coat and ability to thrive near human settlements as "
-                "well as deep forests."
-            ),
-            fun_fact=(
-                "Leopards can drag prey twice their body weight up into trees to keep it "
-                "safe from lions and hyenas."
-            ),
-            native_to_india=True,
-            image_data_uri=leopard_uri,
-        ),
-        Prediction(
-            rank=3,
-            common_name="Asiatic Lion",
-            scientific_name="Panthera leo persica",
-            confidence=62.1,
-            status="EN",
-            description=(
-                "A slightly smaller cousin of the African lion, with a distinctive belly "
-                "fold. Today the entire wild population — around 670 — lives only in India's "
-                "Gir Forest."
-            ),
-            fun_fact=(
-                "Asiatic lion males have shorter, sparser manes than African lions, "
-                "leaving their ears almost always visible."
-            ),
-            native_to_india=True,
-            image_data_uri=lion_uri,
-        ),
-    ]
+    # Run inference
+    raw_results = classifier.predict(image, top_k=3)  # [(class_key, confidence), ...]
+
+    predictions = []
+    for rank, (class_key, conf) in enumerate(raw_results, start=1):
+        meta = species_db.get(class_key, {})
+
+        # Use uploaded image URI for rank-1, look for a sample image for others
+        if rank == 1:
+            img_uri = uploaded_uri
+        else:
+            sample_path = Path(__file__).parent / "samples" / f"{class_key}.jpg"
+            img_uri = file_to_data_uri(sample_path) if sample_path.exists() else None
+
+        predictions.append(Prediction(
+            rank=rank,
+            common_name=meta.get("common_name", class_key.replace("_", " ").title()),
+            scientific_name=meta.get("scientific_name", ""),
+            confidence=round(conf * 100, 1),
+            status=meta.get("iucn_status", "DD"),
+            description=meta.get("description", ""),
+            fun_fact=meta.get("fun_fact", ""),
+            native_to_india=meta.get("native_to_india", False),
+            image_data_uri=img_uri,
+        ))
+
+    return predictions
 
 
 # ---------------------------------------------------------------------------

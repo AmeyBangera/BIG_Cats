@@ -1,244 +1,121 @@
-# 🦁 Indian Wildlife & Bird Identifier
+# 🐯 Big Cats — Wildlife Species Identifier
 
-A beautiful Streamlit web application for identifying Indian wildlife and birds from photos. Get species predictions, conservation status, and interesting facts!
+**SMAI Assignment 3 · Variant T7.5 · IIIT Hyderabad 2025–26**
 
-## Features
+Upload a photo of a big cat and get the top-3 species predictions with confidence scores, IUCN conservation status, and curated fun facts.
 
-✨ **Key Features:**
-- 📸 **Image Upload** - Simple drag-and-drop interface for wildlife photos
-- 🤖 **AI-Powered Predictions** - CLIP zero-shot or fine-tuned EfficientNet models
-- 🏆 **Top-3 Predictions** - Ranked species with confidence scores
-- 🛡️ **IUCN Status Badges** - Conservation status with color-coded severity
-- 📚 **Wikipedia Excerpts** - Detailed information about each species
-- 💡 **Fun Facts** - Interesting tidbits powered by Gemini API
-- 💾 **Smart Caching** - Efficient data caching for fast responses
+[![Open in Streamlit](https://static.streamlit.io/badges/streamlit_badge_black_white.svg)](https://your-app.streamlit.app)
+
+---
+
+## Species Covered
+
+| Species | Scientific Name | IUCN Status | Native to India |
+|---------|----------------|-------------|-----------------|
+| Bengal Tiger | *Panthera tigris tigris* | Endangered | ✅ |
+| Asiatic Lion | *Panthera leo persica* | Endangered | ✅ |
+| Indian Leopard | *Panthera pardus fusca* | Vulnerable | ✅ |
+| Snow Leopard | *Panthera uncia* | Vulnerable | ✅ |
+| Clouded Leopard | *Neofelis nebulosa* | Vulnerable | ✅ |
+| Cheetah | *Acinonyx jubatus* | Vulnerable | ➕ (reintroduced) |
+| Jaguar | *Panthera onca* | Near Threatened | ❌ |
+| Puma | *Puma concolor* | Least Concern | ❌ |
+
+---
 
 ## Quick Start
 
-### Installation
+### 1. Clone and install
 
 ```bash
-# Clone the repository
-git clone <repo-url>
+git clone https://github.com/your-username/BIG_Cats.git
 cd BIG_Cats
-
-# Install dependencies
 pip install -r requirements.txt
 ```
 
-### Running the App
+### 2. (Optional) Download fine-tuned weights
+
+If you have `big_cats_efficientnet.pth` (from training the notebook), place it in the project root. Otherwise the app automatically falls back to **CLIP ViT-B/32 zero-shot** — no weights file needed.
+
+### 3. Run
 
 ```bash
 streamlit run app.py
 ```
 
-The app will open at `http://localhost:8501`
+Open [http://localhost:8501](http://localhost:8501) in your browser.
 
-## Configuration
-
-### Environment Variables
-
-Set up your Gemini API key (optional, for fun facts):
-
-```bash
-export GEMINI_API_KEY="your-api-key-here"
-```
-
-On Windows (PowerShell):
-```powershell
-$env:GEMINI_API_KEY = "your-api-key-here"
-```
-
-### Model Selection
-
-Edit the configuration in `app.py` to choose your model:
-
-```python
-# Option 1: CLIP Zero-Shot (no training required)
-model = WildlifeIdentifier(model_type="clip", model_name="openai/clip-vit-base-patch32")
-
-# Option 2: Fine-Tuned EfficientNet
-model = WildlifeIdentifier(model_type="efficientnet", model_name="efficientnet_b0")
-```
+---
 
 ## Project Structure
 
 ```
 BIG_Cats/
-├── app.py                 # Main Streamlit application
-├── model.py              # CLIP & EfficientNet model wrappers
-├── data_manager.py       # IUCN status & Wikipedia data management
-├── config.py             # Configuration and utilities
-├── requirements.txt      # Python dependencies
-├── species_db.json       # Species database (auto-created)
-└── species_data_cache.json  # Cached species data (auto-created)
+├── app.py                     # Streamlit web application
+├── model.py                   # EfficientNet-B0 + CLIP inference wrappers
+├── species_data.json          # Curated IUCN status, descriptions, fun facts
+├── train_big_cats.ipynb       # Colab training notebook
+├── requirements.txt
+├── samples/
+│   ├── hero.jpg               # Hero image (Bengal tiger)
+│   ├── tiger.jpg              # Sample for "Try a sample" button
+│   ├── leopard.jpg
+│   ├── lion.jpg
+│   └── Logo(Big-Cats).png
+└── README.md
 ```
-
-## How to Integrate Your Model
-
-### 1. Using CLIP (Zero-Shot, Recommended)
-
-```python
-from model import WildlifeIdentifier, INDIAN_SPECIES
-
-# Initialize model
-identifier = WildlifeIdentifier(model_type="clip")
-
-# Load and process image
-image = Image.open("wildlife.jpg")
-
-# Get predictions
-predictions = identifier.predict_clip_zeroshot(
-    image=image,
-    species_list=INDIAN_SPECIES,
-    top_k=3
-)
-
-# Results: [("Bengal Tiger", 0.95), ("Leopard", 0.04), ("Bear", 0.01)]
-```
-
-### 2. Using Fine-Tuned EfficientNet
-
-```python
-# Initialize model
-identifier = WildlifeIdentifier(model_type="efficientnet")
-
-# Get predictions
-predictions = identifier.predict_efficientnet(
-    image=image,
-    top_k=3
-)
-```
-
-### 3. Integration in Frontend
-
-Example integration in `app.py`:
-
-```python
-from model import get_model, INDIAN_SPECIES
-from PIL import Image
-
-# Get cached model
-model = get_model(model_type="clip")
-
-# Process uploaded image
-if uploaded_file:
-    image = Image.open(uploaded_file)
-    
-    # Get predictions
-    predictions = model.predict_clip_zeroshot(
-        image=image,
-        species_list=INDIAN_SPECIES,
-        top_k=3
-    )
-    
-    # predictions = [("Species", confidence), ...]
-    
-    # Get species info and display
-    for rank, (species, confidence) in enumerate(predictions, 1):
-        info = data_manager.get_species_info(species)
-        display_prediction_card(rank, species, confidence, info)
-```
-
-## Data Sources
-
-- **IUCN Red List**: Conservation status data
-- **Gemini API**: Fun facts and dynamic content
-- **Species Database**: Curated JSON database with Wikipedia excerpts
-
-## UI/UX Highlights
-
-🎨 **Design Features:**
-- Gradient backgrounds and modern color scheme
-- Responsive grid layout for predictions
-- Hover animations on prediction cards
-- Color-coded IUCN status badges
-- Mobile-friendly responsive design
-- Smooth transitions and visual feedback
-
-### Color Scheme
-
-- **Primary**: Purple gradient (#667eea → #764ba2)
-- **Endangered Status**: Red to Orange (#d32f2f → #f57c00)
-- **Protected Status**: Green (#388e3c)
-- **Data Deficient**: Gray (#90a4ae)
-
-## API Integration
-
-### IUCN Status
-
-The app includes a built-in IUCN status database. For custom updates:
-
-```python
-from data_manager import DataManager
-
-dm = DataManager()
-status = dm.get_iucn_status("Bengal Tiger")
-# Returns: {"status": "Endangered", "population": "~2,500", ...}
-```
-
-### Gemini API for Fun Facts
-
-```python
-import os
-from data_manager import DataManager
-
-api_key = os.getenv("GEMINI_API_KEY")
-dm = DataManager(gemini_api_key=api_key)
-
-# Auto-fetches fun facts and caches them
-info = dm.get_species_info("Bengal Tiger")
-```
-
-## Requirements
-
-```
-streamlit==1.28.1           # Web framework
-Pillow==10.0.1             # Image processing
-torch==2.0.1               # Deep learning
-torchvision==0.15.2        # Vision models
-transformers==4.33.0       # CLIP models
-google-generativeai==0.3.0 # Gemini API
-```
-
-## Performance Tips
-
-1. **Caching**: The app uses Streamlit's `@st.cache_resource` for model loading
-2. **Batch Processing**: Process multiple images efficiently with proper batching
-3. **GPU Acceleration**: Automatic GPU detection and usage
-4. **Data Caching**: Species information cached locally in JSON
-
-## Troubleshooting
-
-| Issue | Solution |
-|-------|----------|
-| Model takes too long to load | GPU not detected. Install CUDA drivers. |
-| Gemini API errors | Check API key, rate limits, and internet connection. |
-| Out of memory | Reduce image size or use a smaller model variant. |
-| Cache not updating | Delete `species_data_cache.json` and restart. |
-
-## Future Enhancements
-
-- 🌍 Expand to global wildlife species
-- 🎯 Custom model fine-tuning interface
-- 🎬 Video frame analysis
-- 📊 Population trend charts
-- 🗺️ Geographic distribution maps
-- 🌐 Multi-language support
-- 📱 Mobile app version
-
-## Contributing
-
-Contributions are welcome! Please feel free to submit pull requests or open issues for bugs and feature requests.
-
-## License
-
-This project is provided as-is for educational and research purposes.
-
-## Contact & Support
-
-For questions, issues, or suggestions, please open an issue in the repository.
 
 ---
 
-**Made with ❤️ for Indian Wildlife Conservation**
+## Model Architecture
+
+### Inference Pipeline
+
+The app uses a two-tier inference strategy:
+
+1. **EfficientNet-B0 (primary)** — Fine-tuned on the Big Cats dataset. Loaded automatically if `big_cats_efficientnet.pth` is present in the project root.
+2. **CLIP ViT-B/32 (fallback)** — Zero-shot classification using descriptive text prompts. No training data or weights file needed.
+
+### Training (EfficientNet-B0)
+
+See `train_big_cats.ipynb` for the full training pipeline. Summary:
+
+| Hyperparameter | Value |
+|---------------|-------|
+| Base model | `timm` EfficientNet-B0 (ImageNet pretrained) |
+| Epochs | 10 |
+| Batch size | 32 |
+| Optimizer | AdamW (lr=3e-4, weight decay=1e-4) |
+| LR schedule | Cosine Annealing |
+| Loss | CrossEntropy + Label Smoothing (0.1) |
+| Augmentation | RandomResizedCrop, HFlip, ColorJitter, RandomRotation, RandomErasing |
+
+### Dataset
+
+- **Source:** [Big Cats Image Classification Dataset](https://www.kaggle.com/datasets/patriciabrezeanu/big-cats-image-classification-dataset) (Kaggle)
+- 8 species, ~1,000–5,000 images per class
+- Split: 75% train / 15% val / 10% test
+
+---
+
+## Deploying to HuggingFace Spaces
+
+1. Create a new Space (Streamlit SDK)
+2. Push all files including `requirements.txt`
+3. Upload `big_cats_efficientnet.pth` to the Space repo (or rely on CLIP fallback)
+4. The app will be live at `https://huggingface.co/spaces/your-username/big-cats`
+
+---
+
+## Acknowledgements
+
+- Dataset: Patricia Brezeanu — [Kaggle](https://www.kaggle.com/datasets/patriciabrezeanu/big-cats-image-classification-dataset)
+- Models: `timm` (rwightman), Hugging Face `transformers` (CLIP by OpenAI)
+- IUCN Red List for conservation status data
+- LLMs used: Claude (Anthropic) for code scaffolding, report drafting, and species descriptions. All evaluation and analysis are our own.
+
+---
+
+## License
+
+MIT — for educational and research purposes.
