@@ -1,5 +1,3 @@
-# Model weights (large binary; distribute separately or via HF Hub)
-big_cats_efficientnet.pth
 
 # Python cache
 __pycache__/
