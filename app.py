@@ -697,72 +697,67 @@ def render_status_html(status: str, position: str = "") -> str:
 
 def render_card(p: Prediction, delay_ms: int) -> str:
     is_top = p.rank == 1
-    image_block = ""
     if p.image_data_uri:
-        image_block = f"""
-          <div class="bc-card-image">
-            {render_status_html(p.status, "abs")}
-            <img src="{p.image_data_uri}" alt="{p.common_name}" loading="lazy"/>
-          </div>
-        """
+      image_block = (
+              f'<div class="bc-card-image">'
+              f'{render_status_html(p.status, "abs")}'
+              f'<img src="{p.image_data_uri}" alt="{p.common_name}" loading="lazy"/>'
+              f'</div>'
+          )
     else:
-        # Fallback gradient if no image
-        image_block = f"""
-          <div class="bc-card-image" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); display: flex; align-items: center; justify-content: center;">
-            {render_status_html(p.status, "abs")}
-            <div style="text-align:center;color:rgba(255,255,255,0.3);font-size:48px;">📷</div>
-          </div>
-        """
+        image_block = (
+            f'<div class="bc-card-image" style="background:linear-gradient(135deg,#667eea 0%,#764ba2 100%);display:flex;align-items:center;justify-content:center;">'
+            f'{render_status_html(p.status, "abs")}'
+            f'<div style="text-align:center;color:rgba(255,255,255,0.3);font-size:48px;">📷</div>'
+            f'</div>'
+        )
     ribbon = '<span class="bc-top-ribbon">Top match</span>' if is_top else ""
     india = '<span class="bc-india">📍 Native to India</span>' if p.native_to_india else ""
-    return f"""
-      <div class="bc-card {'top' if is_top else ''}" style="animation-delay:{delay_ms}ms">
-        {ribbon}
-        {image_block}
-        <div class="bc-card-body">
-          <div>
-            <div style="display:flex;align-items:center;gap:8px;">
-              <span class="rank">#{p.rank}</span>
-              {india}
-            </div>
-            <h3>{p.common_name}</h3>
-            <div class="sci">{p.scientific_name}</div>
-          </div>
-
-          <div>
-            <div class="bc-conf-row">
-              <span>Confidence</span>
-              <span class="v">{p.confidence:.1f}%</span>
-            </div>
-            <div class="bc-conf-track">
-              <div class="bc-conf-fill" style="width:{p.confidence:.1f}%"></div>
-            </div>
-          </div>
-
-          <p class="bc-desc">{p.description}</p>
-
-          <div class="bc-fact">
-            <span class="label">★ Fun fact</span>
-            <p>{p.fun_fact}</p>
-          </div>
-        </div>
-      </div>
-    """
+    return (
+        f'<div class="bc-card {"top" if is_top else ""}" style="animation-delay:{delay_ms}ms">'
+        f'{ribbon}'
+        f'{image_block}'
+        f'<div class="bc-card-body">'
+        f'<div>'
+        f'<div style="display:flex;align-items:center;gap:8px;">'
+        f'<span class="rank">#{p.rank}</span>'
+        f'{india}'
+        f'</div>'
+        f'<h3>{p.common_name}</h3>'
+        f'<div class="sci">{p.scientific_name}</div>'
+        f'</div>'
+        f'<div>'
+        f'<div class="bc-conf-row">'
+        f'<span>Confidence</span>'
+        f'<span class="v">{p.confidence:.1f}%</span>'
+        f'</div>'
+        f'<div class="bc-conf-track">'
+        f'<div class="bc-conf-fill" style="width:{p.confidence:.1f}%"></div>'
+        f'</div>'
+        f'</div>'
+        f'<p class="bc-desc">{p.description}</p>'
+        f'<div class="bc-fact">'
+        f'<span class="label">★ Fun fact</span>'
+        f'<p>{p.fun_fact}</p>'
+        f'</div>'
+        f'</div>'
+        f'</div>'
+    )
 
 
 def render_skeletons():
-    skeleton_html = """
-      <div class="bc-card" style="height:100%">
-        <div class="bc-skel" style="aspect-ratio:5/3;border-radius:0"></div>
-        <div class="bc-card-body">
-          <div class="bc-skel" style="height:18px;width:65%"></div>
-          <div class="bc-skel" style="height:12px;width:45%"></div>
-          <div class="bc-skel" style="height:6px;width:100%"></div>
-          <div class="bc-skel" style="height:12px;width:100%"></div>
-          <div class="bc-skel" style="height:12px;width:85%"></div>
-        </div>
-      </div>
-    """
+    skeleton_html = (
+        '<div class="bc-card" style="height:100%">'
+        '<div class="bc-skel" style="aspect-ratio:5/3;border-radius:0"></div>'
+        '<div class="bc-card-body">'
+        '<div class="bc-skel" style="height:18px;width:65%"></div>'
+        '<div class="bc-skel" style="height:12px;width:45%"></div>'
+        '<div class="bc-skel" style="height:6px;width:100%"></div>'
+        '<div class="bc-skel" style="height:12px;width:100%"></div>'
+        '<div class="bc-skel" style="height:12px;width:85%"></div>'
+        '</div>'
+        '</div>'
+    )
     cols = st.columns(3, gap="medium")
     for c in cols:
         with c:
